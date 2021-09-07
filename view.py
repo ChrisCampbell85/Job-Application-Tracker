@@ -1,35 +1,25 @@
 from tkinter import *
-from typing import List
-
+from funcs import toplevels
+from interact_db import *
 """
 This is the base frame for the GUI
 """
 
-# Company
-# Contact Details (Optional)
-# Position
-# Date Applied
-# Platform Applied on (LinkedIn etc)
-
-entrybox_labels = ['Company','Contact Details', 'Position', 'Date Applied', 'Hiring Platform']
-
-class Tracker(Frame):
-    def __init__(self, master=None, entrybox_labels = []):
+class Homepage(Frame):
+    def __init__(self, master=None):
         super().__init__(master)
         self.master = master
-        self.entrybox_labels = entrybox_labels
-        self.entry_variables = []
         self.pack()
+        Label(self, text='Job Application Tracker').pack()
+        self.create_buttons()
 
-    def create_entries(self):
-        for title in self.entrybox_labels:
-            Label(self, text=title).pack(anchor=NW)
-            entry_variable = StringVar()
-            Entry(self, textvariable=entry_variable).pack(side=TOP)
-            self.entry_variables.append(entry_variable)
+    def create_buttons(self):
+        for title, func in toplevels.items():
+            Button(self, text=title, command=func).pack(side=TOP)
 
-root = Tk()
-app = Tracker(root, entrybox_labels)
-app.create_entries()
-print(app.entry_variables)
-app.mainloop()
+
+if __name__ == "__main__":
+    create_db()
+    root = Tk()
+    app = Homepage(master=root)
+    app.mainloop()
