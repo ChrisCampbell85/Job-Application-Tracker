@@ -1,5 +1,6 @@
 import sqlite3
 
+
 DB_NAME = 'applications.db'
 
 def get_database_connection():
@@ -7,8 +8,9 @@ def get_database_connection():
     this function should create a connection
     to the database and return the connection
     """
+
     con = sqlite3.connect(DB_NAME)
-    
+    # con = sqlite3.connect(':memory:')
     return con
 
 def create_db(create=True):
@@ -24,7 +26,8 @@ def create_db(create=True):
             contact_details     TEXT                NOT NULL,
             position            TEXT                NOT NULL,
             hiring_platform     TEXT                NOT NULL,
-            date_applied        CHAR(15)            NOT NULL
+            misc_details        TEXT                NULL,
+            date_applied        CHAR(15)            NULL
 
         )   
         """
@@ -38,13 +41,9 @@ def populate_db(entry_variables):
     write code that will use the given sql statement to populate
     the new table with the contract_list data
     """
-    # get StringVars in entry_variables
-    converted_variables = []
-    for item in entry_variables:
-        converted_variables.append(item.get())
-    to_execute = [converted_variables]
+    to_execute = [entry_variables]
 
-    add_data_stmt = ''' INSERT INTO job_applications (company,contact_details,position,hiring_platform,date_applied) VALUES(?,?,?,?,?); '''
+    add_data_stmt = ''' INSERT INTO job_applications (company,contact_details,position,hiring_platform,misc_details,date_applied) VALUES(?,?,?,?,?); '''
     con = get_database_connection()
     con.executemany(add_data_stmt, to_execute)
     con.commit()
