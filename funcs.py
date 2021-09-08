@@ -16,6 +16,7 @@ scrolledtext_variables = []
 entry_variables = []
 
 class Create:
+    """Creates Toplevel for application entry"""
     def __init__(self):
         self.create()
 
@@ -27,11 +28,11 @@ class Create:
         self.date_applied_button(frame)
                 
     def create_entries(self, frame):
+        """Populates Toplevel frame of Create class"""
         for title in entrybox_labels:
             if title != entrybox_labels[-1]:
                 Label(frame, text=title).grid()
                 entry_variable = StringVar()
-                # FIX ENTRY VARIABLE CONVERSIONS
                 if title == entrybox_labels[-2]:
                     scroll_text = ScrolledText(frame, width=30, height=10)
                     scroll_text.grid()
@@ -44,11 +45,15 @@ class Create:
         print(entry_variables)
      
     def save_entries(self, frame):
+        """Button that saves entry objects to database"""
         button = Button(frame, text='Save', command=lambda: populate_db(self.convert()))
         button.grid(row=60, sticky=SE)
 
     def convert(self):
+        """Converts all the entry objects to string for populate_db.py"""
         converted = []
+        # currently skips last entry, need to constuct date selection option
+        # placeholder used for now
         for item in entry_variables[:-1]:
             converted.append(item.get())
         for item in scrolledtext_variables:
