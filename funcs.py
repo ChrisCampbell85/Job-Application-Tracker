@@ -1,6 +1,9 @@
+from datetime import date
 from tkinter import *
 from tkinter import scrolledtext
 from tkinter.scrolledtext import ScrolledText
+
+from babel.dates import date_
 from interact_db import *
 from tkcalendar import Calendar, DateEntry
 
@@ -14,6 +17,7 @@ from tkcalendar import Calendar, DateEntry
 entrybox_labels = ['Company','Contact Details', 'Position', 'Hiring Platform', 'Misc Details', 'Date Applied']
 scrolledtext_variables = []
 entry_variables = []
+date_variable = []
 
 class Create:
     """Creates Toplevel for application entry"""
@@ -21,11 +25,11 @@ class Create:
         self.create()
 
     def create(self):
+        """Creates Toplevel for entries and Date Appiled and Save buttons"""
         frame = Toplevel()
         Label(frame, text='Enter Job Application').grid()
         self.create_entries(frame)
         self.save_entries(frame)
-        self.date_applied_button(frame)
                 
     def create_entries(self, frame):
         """Populates Toplevel frame of Create class"""
@@ -40,9 +44,13 @@ class Create:
                 else:
                     Entry(frame, textvariable=entry_variable).grid(sticky='we')
                     entry_variables.append(entry_variable)
-        entry_variables.append(entrybox_labels[-1])
-        print(scrolledtext_variables)
-        print(entry_variables)
+            else:
+                # THIS IS A PLACEHOLDER UNTIL DATE APPLIED IS WRITTEN
+                Label(frame, text=entrybox_labels[-1]).grid()
+                date_entry = DateEntry(frame)
+                date_entry.grid()
+                date_variable.append(date_variable)
+
      
     def save_entries(self, frame):
         """Button that saves entry objects to database"""
@@ -58,18 +66,10 @@ class Create:
             converted.append(item.get())
         for item in scrolledtext_variables:
             converted.append(item.get('1.0', 'end-1c'))
+        # PLACEHOLDER
         converted.append(entry_variables[-1])
+
         return converted
-            
-
-    def date_applied_button(self, frame):
-        Button(frame, text='Add Date Applied', command=lambda: self.calendar_selection(frame)).grid(row=60, sticky=S)
-        
-    def calendar_selection(self, frame):
-        pass
-
-
-        
 
         
 # figure out how to do rowspans so info is side by side
