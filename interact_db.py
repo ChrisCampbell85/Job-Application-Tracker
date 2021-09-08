@@ -11,26 +11,26 @@ def get_database_connection():
     
     return con
 
-def create_db():
+def create_db(create=True):
     """
     Creates a table ready to accept our data.
     write code that will execute the given sql statment
     on the database
     """
-    
-    create_table = """ CREATE TABLE IF NOT EXISTS job_applications (
-        ID          INTEGER PRIMARY KEY     AUTOINCREMENT,
-        company             TEXT                NOT NULL,
-        contact_details     TEXT                NOT NULL,
-        position            TEXT                NOT NULL,
-        hiring_platform     TEXT                NOT NULL,
-        date_applied        CHAR(15)            NOT NULL
+    if create:
+        create_table = """ CREATE TABLE IF NOT EXISTS job_applications (
+            ID          INTEGER PRIMARY KEY     AUTOINCREMENT,
+            company             TEXT                NOT NULL,
+            contact_details     TEXT                NOT NULL,
+            position            TEXT                NOT NULL,
+            hiring_platform     TEXT                NOT NULL,
+            date_applied        CHAR(15)            NOT NULL
 
-    )   
-    """
-    con = get_database_connection()
-    con.execute(create_table)
-    con.close()
+        )   
+        """
+        con = get_database_connection()
+        con.execute(create_table)
+        con.close()
 
 def populate_db(entry_variables):
     """
@@ -56,8 +56,7 @@ def read_data_from_db():
     Read data from database.
     execute the given sql statement and return the results
     """
-    
-    sql_query = ''' SELECT company,contact_details,position,hiring_platform,date_applied FROM job_applications; '''
+    sql_query = ''' SELECT company, contact_details, position, hiring_platform, date_applied FROM job_applications; '''
     
     con = get_database_connection()
     cur = con.cursor()
@@ -69,14 +68,3 @@ def read_data_from_db():
     con.close()
 
     return results
-
-def main():
-    results = read_data_from_db()
-    
-
-    # Provide the data in readable format
-    
-    for item in results:
-        print(f"{item[0]}\t{item[1]}\t{item[2]}\t{item[3]}\t{item[4]}\n")
-
-main()

@@ -10,16 +10,17 @@ class Homepage(Frame):
         super().__init__(master)
         self.master = master
         self.pack()
-        Label(self, text='Job Application Tracker').pack()
+        Label(self, text='Job Application Tracker').grid(row=0)
         self.create_buttons()
 
     def create_buttons(self):
         for title, func in toplevels.items():
-            Button(self, text=title, command=func).pack(side=TOP)
-
+            Button(self, text=title, command=func).grid(sticky='we', ipady=10, ipadx=40)
+            
+        
 
 if __name__ == "__main__":
-    create_db()
+    create_db(create=False)
     root = Tk()
     app = Homepage(master=root)
     app.mainloop()

@@ -8,7 +8,7 @@ from interact_db import *
 # homepage CRUD button funcs
 # need to pass in homepage frame
 
-entrybox_labels = ['Company','Contact Details', 'Position', 'Date Applied', 'Hiring Platform']
+entrybox_labels = ['Company','Contact Details', 'Position', 'Hiring Platform', 'Date Applied']
 entry_variables = []
 
 class Create:
@@ -17,32 +17,46 @@ class Create:
 
     def create(self):
         frame = Toplevel()
-        Label(frame, text='Enter Job Application').pack()
+        Label(frame, text='Enter Job Application').grid()
         self.create_entries(frame)
         self.save_entries(frame)
                 
     def create_entries(self, frame):
         for title in entrybox_labels:
-            Label(frame, text=title).pack(anchor=NW)
-            entry_variable = StringVar()
-            # add logic/formatting for date applied
-            Entry(frame, textvariable=entry_variable).pack(side=TOP)
-            entry_variables.append(entry_variable)
+            if title != 'Date Applied':
+                Label(frame, text=title).grid()
+                entry_variable = StringVar()
+                # add logic/formatting for date applied
+                Entry(frame, textvariable=entry_variable).grid(ipadx=10)
+                entry_variables.append(entry_variable)
+            Label(frame, text=(entrybox_labels[-1])).grid()
+            
 
     def save_entries(self, frame):
-        Button(frame, text='Save', command=lambda: populate_db(entry_variables)).pack(anchor=SE)
+        Button(frame, text='Save', command=lambda: populate_db(entry_variables)).grid(row=11, sticky=SE)
         
+# figure out how to do rowspans so info is side by side
+class Read:
+    def __init__(self):
+        self.read()
 
-def read():
-    frame = Toplevel()
+    def read(self):
+        frame = Toplevel()
+        table = read_data_from_db()
+        
+class Update:
+    def __init__(self):
+        self.update()
 
-def update():
-    frame = Toplevel()
+    def update():
+        frame = Toplevel()
 
-def delete():
-    frame = Toplevel()
+class Delete:
+    def __init__(self):
+        self.delete()
 
+    def delete():
+        frame = Toplevel()
 
-# crud_classes =[CreateApplication, ReadApplication, UpdateApplication, DeleteApplication]
-toplevels = {'Create': Create, 'Read': read, 'Update': update, 'Delete': delete}
+toplevels = {'Create': Create, 'Read': Read, 'Update': Update, 'Delete': Delete}
 
