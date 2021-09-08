@@ -1,23 +1,14 @@
-from datetime import date
 from tkinter import *
-from tkinter import scrolledtext
 from tkinter.scrolledtext import ScrolledText
+from interact_db import populate_db, read_data_from_db
+from tkcalendar import DateEntry
 
-from babel.dates import date_
-from interact_db import *
-from tkcalendar import Calendar, DateEntry
-
-""" Functions for button callbacks """
-
-# save entries into SQLite db
-
-# homepage CRUD button funcs
-# need to pass in homepage frame
+""" Functions for HomePage button callbacks """
 
 entrybox_labels = ['Company','Contact Details', 'Position', 'Hiring Platform', 'Misc Details', 'Date Applied']
 scrolledtext_variables = []
 entry_variables = []
-date_variable = []
+date_variables = []
 
 class Create:
     """Creates Toplevel for application entry"""
@@ -45,29 +36,28 @@ class Create:
                     Entry(frame, textvariable=entry_variable).grid(sticky='we')
                     entry_variables.append(entry_variable)
             else:
-                # THIS IS A PLACEHOLDER UNTIL DATE APPLIED IS WRITTEN
                 Label(frame, text=entrybox_labels[-1]).grid()
                 date_entry = DateEntry(frame)
                 date_entry.grid()
-                date_variable.append(date_variable)
+                date_variables.append(date_entry)
+                
 
-     
     def save_entries(self, frame):
         """Button that saves entry objects to database"""
         button = Button(frame, text='Save', command=lambda: populate_db(self.convert()))
         button.grid(row=60, sticky=SE)
 
+
     def convert(self):
         """Converts all the entry objects to string for populate_db.py"""
         converted = []
-        # currently skips last entry, need to constuct date selection option
-        # placeholder used for now
-        for item in entry_variables[:-1]:
+        for item in entry_variables:
             converted.append(item.get())
         for item in scrolledtext_variables:
             converted.append(item.get('1.0', 'end-1c'))
-        # PLACEHOLDER
-        converted.append(entry_variables[-1])
+        # date output converted to str, year/month/day
+        for item in date_variables:
+            converted.append(str(item.get_date()))
 
         return converted
 

@@ -40,15 +40,7 @@ def populate_db(entry_variables):
     Populate the table database.
     write code that will use the given sql statement to populate
     the new table with the contract_list data
-    """
-    # converted = []
-    # for item in entry_variables[:-1]:
-    #     converted.append(item.get())
-    # for item in scrolltext_variables:
-    #     converted.append(item.get('1.0', 'end-1c'))
-    # converted.append(entry_variables[-1])
-    # print(converted)
-    
+    """   
 
     to_execute = [entry_variables]
 
