@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import scrolledtext
 from tkinter.scrolledtext import ScrolledText
 from interact_db import *
 from tkcalendar import Calendar, DateEntry
@@ -11,11 +12,11 @@ from tkcalendar import Calendar, DateEntry
 # need to pass in homepage frame
 
 entrybox_labels = ['Company','Contact Details', 'Position', 'Hiring Platform', 'Misc Details', 'Date Applied']
+scrolledtext_variables = []
+entry_variables = []
 
 class Create:
     def __init__(self):
-        self.entry_variables = []
-        self.converted_entry_variables = []
         self.create()
 
     def create(self):
@@ -30,30 +31,38 @@ class Create:
             if title != entrybox_labels[-1]:
                 Label(frame, text=title).grid()
                 entry_variable = StringVar()
-                # add logic/formatting for date applied
+                # FIX ENTRY VARIABLE CONVERSIONS
                 if title == entrybox_labels[-2]:
                     scroll_text = ScrolledText(frame, width=30, height=10)
                     scroll_text.grid()
-                    self.entry_variables.append(scroll_text)
+                    scrolledtext_variables.append(scroll_text)
                 else:
                     Entry(frame, textvariable=entry_variable).grid(sticky='we')
-                    self.entry_variables.append(entry_variable)
-
+                    entry_variables.append(entry_variable)
+        entry_variables.append(entrybox_labels[-1])
+        print(scrolledtext_variables)
+        print(entry_variables)
+     
     def save_entries(self, frame):
-        button = Button(frame, text='Save', command=lambda: populate_db(self.converted_entry_variables))
+        button = Button(frame, text='Save', command=lambda: populate_db(self.convert()))
         button.grid(row=60, sticky=SE)
+
+    def convert(self):
+        converted = []
+        for item in entry_variables[:-1]:
+            converted.append(item.get())
+        for item in scrolledtext_variables:
+            converted.append(item.get('1.0', 'end-1c'))
+        converted.append(entry_variables[-1])
+        return converted
+            
 
     def date_applied_button(self, frame):
         Button(frame, text='Add Date Applied', command=lambda: self.calendar_selection(frame)).grid(row=60, sticky=S)
         
-    
     def calendar_selection(self, frame):
         pass
 
-    def convert_entry_variables(self):
-        self.converted_entry_variables = self.entry_variables.copy()
-        for item in self.converted_entry_variables:
-            item = item.get('1.0', 'end-1c')
 
         
 

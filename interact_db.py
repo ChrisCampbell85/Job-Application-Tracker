@@ -41,9 +41,18 @@ def populate_db(entry_variables):
     write code that will use the given sql statement to populate
     the new table with the contract_list data
     """
+    # converted = []
+    # for item in entry_variables[:-1]:
+    #     converted.append(item.get())
+    # for item in scrolltext_variables:
+    #     converted.append(item.get('1.0', 'end-1c'))
+    # converted.append(entry_variables[-1])
+    # print(converted)
+    
+
     to_execute = [entry_variables]
 
-    add_data_stmt = ''' INSERT INTO job_applications (company,contact_details,position,hiring_platform,misc_details,date_applied) VALUES(?,?,?,?,?); '''
+    add_data_stmt = ''' INSERT INTO job_applications (company,contact_details,position,hiring_platform,misc_details,date_applied) VALUES(?,?,?,?,?,?); '''
     con = get_database_connection()
     con.executemany(add_data_stmt, to_execute)
     con.commit()
@@ -55,7 +64,7 @@ def read_data_from_db():
     Read data from database.
     execute the given sql statement and return the results
     """
-    sql_query = ''' SELECT company, contact_details, position, hiring_platform, date_applied FROM job_applications; '''
+    sql_query = ''' SELECT company, contact_details, position, hiring_platform, misc_details, date_applied FROM job_applications; '''
     
     con = get_database_connection()
     cur = con.cursor()
