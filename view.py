@@ -22,10 +22,6 @@ class Homepage(Frame):
     # quit program
     def quit_button(self,frame):
         Button(frame, text='Quit', command=frame.quit).grid(row=60, sticky=SE)
-
-    def back_button(self, frame):
-        Button(frame, text='Go Back', command=self.destroy).grid(row=60, sticky=SW)
-
             
         
 

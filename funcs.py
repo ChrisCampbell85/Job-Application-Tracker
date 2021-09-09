@@ -5,7 +5,6 @@ from tkcalendar import DateEntry
 
 """ Functions for HomePage button callbacks """
 
-Scrollbar
 entrybox_labels = ['Company','Contact Details', 'Position', 'Hiring Platform', 'Misc Details', 'Date Applied']
 
 class Create:
@@ -22,7 +21,7 @@ class Create:
         Label(frame, text='Enter Job Application').grid()
         self.create_entries(frame)
         self.save_entries(frame)
-
+        self.back_button(frame)
                 
     def create_entries(self, frame):
         """Populates Toplevel frame of Create class"""
@@ -64,6 +63,10 @@ class Create:
 
         return converted_variables
 
+    def back_button(self, frame):
+        Button(frame, text='Go Back', command=frame.destroy).grid(row=60, sticky=S)
+
+
         
 class Read:
     def __init__(self):
@@ -102,21 +105,29 @@ class Read:
         canvas.config(yscrollcommand=scroll.set)
         scroll.pack(side=RIGHT, fill=Y)
         canvas.pack(side=LEFT, expand=YES, fill=BOTH)
+        self.back_button(frame)
         canvas.create_text(150, 50, text=message)
-            
+        # if scroll functionality is desired
+        canvas.bind_all("<MouseWheel>", lambda event: self.scrollable(event, canvas))
+    
+    def back_button(self, frame):
+        Button(frame, text='Go Back', command=frame.destroy).pack(side=BOTTOM, anchor=S)
+
+    def scrollable(self, event, canvas):
+        canvas.yview_scroll(int(-1*(event.delta/100)), "units")
 
 class Update:
     def __init__(self):
         self.update()
 
-    def update():
+    def update(self):
         frame = Toplevel()
 
 class Delete:
     def __init__(self):
         self.delete()
 
-    def delete():
+    def delete(self):
         frame = Toplevel()
 
 
