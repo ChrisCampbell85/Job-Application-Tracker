@@ -5,6 +5,7 @@ from tkcalendar import DateEntry
 
 """ Functions for HomePage button callbacks """
 
+
 entrybox_labels = ['Company','Contact Details', 'Position', 'Hiring Platform', 'Misc Details', 'Date Applied']
 
 class Create:
@@ -21,6 +22,7 @@ class Create:
         Label(frame, text='Enter Job Application').grid()
         self.create_entries(frame)
         self.save_entries(frame)
+        
                 
     def create_entries(self, frame):
         """Populates Toplevel frame of Create class"""
@@ -63,7 +65,6 @@ class Create:
         return converted_variables
 
         
-# figure out how to do rowspans so info is side by side
 class Read:
     def __init__(self):
         self.read()
@@ -102,5 +103,4 @@ class Delete:
     def delete():
         frame = Toplevel()
 
-toplevels = {'Create': Create, 'Read': Read, 'Update': Update, 'Delete': Delete}
 
