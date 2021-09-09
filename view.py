@@ -20,7 +20,7 @@ class Homepage(Frame):
         
 
 if __name__ == "__main__":
-    create_db(create=True)
+    create_db()
     root = Tk()
     app = Homepage(master=root)
     app.mainloop()

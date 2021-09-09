@@ -6,9 +6,6 @@ from tkcalendar import DateEntry
 """ Functions for HomePage button callbacks """
 
 entrybox_labels = ['Company','Contact Details', 'Position', 'Hiring Platform', 'Misc Details', 'Date Applied']
-scrolledtext_variables = []
-entry_variables = []
-date_variables = []
 
 class Create:
     """Creates Toplevel for application entry"""
@@ -17,6 +14,9 @@ class Create:
 
     def create(self):
         """Creates Toplevel for entries and Date Appiled and Save buttons"""
+        self.scrolledtext_variables = []
+        self.entry_variables = []
+        self.date_variables = []
         frame = Toplevel()
         Label(frame, text='Enter Job Application').grid()
         self.create_entries(frame)
@@ -31,15 +31,15 @@ class Create:
                 if title == entrybox_labels[-2]:
                     scroll_text = ScrolledText(frame, width=30, height=10)
                     scroll_text.grid()
-                    scrolledtext_variables.append(scroll_text)
+                    self.scrolledtext_variables.append(scroll_text)
                 else:
                     Entry(frame, textvariable=entry_variable).grid(sticky='we')
-                    entry_variables.append(entry_variable)
+                    self.entry_variables.append(entry_variable)
             else:
                 Label(frame, text=entrybox_labels[-1]).grid()
                 date_entry = DateEntry(frame)
                 date_entry.grid()
-                date_variables.append(date_entry)
+                self.date_variables.append(date_entry)
                 
 
     def save_entries(self, frame):
@@ -50,13 +50,14 @@ class Create:
 
     def convert(self):
         """Converts all the entry objects to string for populate_db.py"""
+        
         converted_variables = []
-        for item in entry_variables:
+        for item in self.entry_variables:
             converted_variables.append(item.get())
-        for item in scrolledtext_variables:
+        for item in self.scrolledtext_variables:
             converted_variables.append(item.get('1.0', 'end-1c'))
         # date output converted to str, year/month/day
-        for item in date_variables:
+        for item in self.date_variables:
             converted_variables.append(str(item.get_date()))
 
         return converted_variables
