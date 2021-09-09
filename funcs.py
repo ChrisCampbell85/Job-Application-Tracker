@@ -50,16 +50,16 @@ class Create:
 
     def convert(self):
         """Converts all the entry objects to string for populate_db.py"""
-        converted = []
+        converted_variables = []
         for item in entry_variables:
-            converted.append(item.get())
+            converted_variables.append(item.get())
         for item in scrolledtext_variables:
-            converted.append(item.get('1.0', 'end-1c'))
+            converted_variables.append(item.get('1.0', 'end-1c'))
         # date output converted to str, year/month/day
         for item in date_variables:
-            converted.append(str(item.get_date()))
+            converted_variables.append(str(item.get_date()))
 
-        return converted
+        return converted_variables
 
         
 # figure out how to do rowspans so info is side by side
@@ -68,10 +68,25 @@ class Read:
         self.read()
 
     def read(self):
+        """Displays current entries in database"""
+        # add scroll functionality!
         frame = Toplevel()
         table = read_data_from_db()
-        print(table)
+        sorted_table = self.sort_db_table(table)
+        for application in sorted_table:
+            for label, entry in application.items():
+                text_label = f'{label}: {entry}'
+                Label(frame, text=text_label).grid(sticky=W)
         
+    def sort_db_table(self, table):
+        """Matches each entry label with entry data"""
+        zipped_list = []
+        for item in table:
+            entry = dict((zip(entrybox_labels, item)))
+            zipped_list.append(entry)
+
+        return zipped_list
+
 class Update:
     def __init__(self):
         self.update()

@@ -1,6 +1,6 @@
 from tkinter import *
 from funcs import toplevels
-from interact_db import *
+from interact_db import create_db
 """
 This is the base frame for the GUI
 """
