@@ -5,7 +5,7 @@ from tkcalendar import DateEntry
 
 """ Functions for HomePage button callbacks """
 
-
+Scrollbar
 entrybox_labels = ['Company','Contact Details', 'Position', 'Hiring Platform', 'Misc Details', 'Date Applied']
 
 class Create:
@@ -22,7 +22,7 @@ class Create:
         Label(frame, text='Enter Job Application').grid()
         self.create_entries(frame)
         self.save_entries(frame)
-        
+
                 
     def create_entries(self, frame):
         """Populates Toplevel frame of Create class"""
@@ -75,11 +75,9 @@ class Read:
         frame = Toplevel()
         table = read_data_from_db()
         sorted_table = self.sort_db_table(table)
-        for application in sorted_table:
-            for label, entry in application.items():
-                text_label = f'{label}: {entry}'
-                Label(frame, text=text_label).grid(sticky=W)
-        
+        self.create_message(frame, sorted_table)
+
+
     def sort_db_table(self, table):
         """Matches each entry label with entry data"""
         zipped_list = []
@@ -88,6 +86,24 @@ class Read:
             zipped_list.append(entry)
 
         return zipped_list
+
+    def create_message(self, frame,sorted_table):
+        """Creates string to view in Message widget"""
+        
+        message = ''
+        for application in sorted_table:
+            message += '\n'
+            for label, entry in application.items():
+                text_label = f'{label}: {entry}\n'
+                message += text_label
+        canvas = Canvas(frame, relief=SUNKEN)
+        canvas.config(width=300, height=300, scrollregion=(0, 0, 300, 1000), highlightthickness=0)
+        scroll = Scrollbar(frame, command=canvas.yview)
+        canvas.config(yscrollcommand=scroll.set)
+        scroll.pack(side=RIGHT, fill=Y)
+        canvas.pack(side=LEFT, expand=YES, fill=BOTH)
+        canvas.create_text(150, 50, text=message)
+            
 
 class Update:
     def __init__(self):
