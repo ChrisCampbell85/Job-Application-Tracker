@@ -77,9 +77,10 @@ class Read:
         # add scroll functionality!
         frame = Toplevel()
         table = read_data_from_db()
-        print(table)
         sorted_table = self.sort_db_table(table)
-        self.create_message(frame, sorted_table)
+        message, applications = self.create_message(frame, sorted_table)
+        self.create_display(frame, message, applications)
+        self.back_button(frame)
 
 
     def sort_db_table(self, table):
@@ -92,30 +93,34 @@ class Read:
         return zipped_list
 
     def create_message(self, frame, sorted_table):
-        """Creates string to view in Message widget"""
+        """Creates string to view in Text widget"""
         message = ''
+        seperator = '-' * 30
         for application in sorted_table:
-            message += '\n'
+            message += f'{seperator}\n'
             for label, entry in application.items():
-                text_label = f'\t{label}: {entry}\n'
+                text_label = f'{label}: {entry}\n'
                 message += text_label
-        application_number = len(sorted_table)
-        Label(frame, text=f'You have applied for {application_number} postions').pack()
-        # insert message into Text widget
+        applications = len(sorted_table)
+
+        return (message, applications)
+
+    def create_display(self, frame, message, applications):
+        """Insert message into Text widget, add a scrollbar"""
+        Label(frame, text=f'You have applied for {applications} postions').pack()
         message_display = Text(frame)
         message_display.insert(END, message)
-        message_display.pack()
+        message_scroll = Scrollbar(frame, command=message_display.yview)
+        message_display.config(yscrollcommand=message_scroll.set)
+        message_display.pack(side=LEFT)
+        message_scroll.pack(side=RIGHT, fill=Y)
     
-        self.back_button(frame)
-        
-        # if scroll functionality is desired
-        # canvas.bind_all("<MouseWheel>", lambda event: self.scrollable(event, canvas))
     
     def back_button(self, frame):
         Button(frame, text='Go Back', command=frame.destroy).pack(side=BOTTOM, anchor=S)
 
-    def scrollable(self, event, canvas):
-        canvas.yview_scroll(int(-1*(event.delta/100)), "units")
+    # def scrollable(self, event, canvas):
+    #     canvas.yview_scroll(int(-1*(event.delta/100)), "units")
 
 class Update:
     def __init__(self):
