@@ -68,3 +68,8 @@ def read_data_from_db():
     con.close()
 
     return results
+
+def test_dynamic_query(user_input):
+    """Test function for dynamic query based on user input"""
+    sql_query = ''.join()
+    pass

@@ -77,6 +77,7 @@ class Read:
         # add scroll functionality!
         frame = Toplevel()
         table = read_data_from_db()
+        print(table)
         sorted_table = self.sort_db_table(table)
         self.create_message(frame, sorted_table)
 
@@ -90,25 +91,25 @@ class Read:
 
         return zipped_list
 
-    def create_message(self, frame,sorted_table):
+    def create_message(self, frame, sorted_table):
         """Creates string to view in Message widget"""
-        
         message = ''
         for application in sorted_table:
             message += '\n'
             for label, entry in application.items():
-                text_label = f'{label}: {entry}\n'
+                text_label = f'\t{label}: {entry}\n'
                 message += text_label
-        canvas = Canvas(frame, relief=SUNKEN)
-        canvas.config(width=300, height=300, scrollregion=(0, 0, 300, 1000), highlightthickness=0)
-        scroll = Scrollbar(frame, command=canvas.yview)
-        canvas.config(yscrollcommand=scroll.set)
-        scroll.pack(side=RIGHT, fill=Y)
-        canvas.pack(side=LEFT, expand=YES, fill=BOTH)
+        application_number = len(sorted_table)
+        Label(frame, text=f'You have applied for {application_number} postions').pack()
+        # insert message into Text widget
+        message_display = Text(frame)
+        message_display.insert(END, message)
+        message_display.pack()
+    
         self.back_button(frame)
-        canvas.create_text(150, 50, text=message)
+        
         # if scroll functionality is desired
-        canvas.bind_all("<MouseWheel>", lambda event: self.scrollable(event, canvas))
+        # canvas.bind_all("<MouseWheel>", lambda event: self.scrollable(event, canvas))
     
     def back_button(self, frame):
         Button(frame, text='Go Back', command=frame.destroy).pack(side=BOTTOM, anchor=S)
@@ -129,5 +130,12 @@ class Delete:
 
     def delete(self):
         frame = Toplevel()
+
+class Test:
+    def __init__(self) -> None:
+        self.test()
+
+    def test(self):
+        pass
 
 
