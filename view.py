@@ -1,10 +1,10 @@
 from tkinter import *
-from funcs import Create, Read, Update, Delete
-from interact_db import create_db, test_dynamic_query
+from funcs import Create, Read, ReadSearch, Update, Delete
+from interact_db import create_db
 """
 This is the base frame for the GUI
 """
-toplevels = {'Create': Create, 'Read': Read, 'Update': Update, 'Delete': Delete}
+toplevels = {'Create': Create, 'Display All': Read,'Search': ReadSearch, 'Update': Update, 'Delete': Delete}
 
 class Homepage(Frame):
     def __init__(self, master=None):
@@ -23,9 +23,6 @@ class Homepage(Frame):
     def quit_button(self,frame):
         Button(frame, text='Quit', command=frame.quit).grid(row=60, sticky=SE)
 
-
-            
-        
 
 if __name__ == "__main__":
     create_db()

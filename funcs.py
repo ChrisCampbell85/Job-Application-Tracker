@@ -5,7 +5,7 @@ from tkcalendar import DateEntry
 
 """ Functions for HomePage button callbacks """
 
-entrybox_labels = ['Company','Contact Details', 'Position', 'Hiring Platform', 'Misc Details', 'Date Applied']
+entrybox_labels = ['company','contact_details','position','hiring_platform','misc_details','date_applied']
 
 class Create:
     """Creates Toplevel for application entry"""
@@ -45,9 +45,12 @@ class Create:
 
     def save_entries(self, frame):
         """Button that saves entry objects to database"""
-        button = Button(frame, text='Save', command=lambda: populate_db(self.convert()))
+        button = Button(frame, text='Save', command=lambda: self.save_handler(frame))
         button.grid(row=60, sticky=SE)
 
+    def save_handler(self, frame):
+        populate_db(self.convert())
+        frame.destroy()
 
     def convert(self):
         """Converts all the entry objects to string for populate_db.py"""
@@ -66,7 +69,6 @@ class Create:
     def back_button(self, frame):
         Button(frame, text='Go Back', command=frame.destroy).grid(row=60, sticky=S)
 
-
         
 class Read:
     def __init__(self):
@@ -74,14 +76,12 @@ class Read:
 
     def read(self):
         """Displays current entries in database"""
-        # add scroll functionality!
         frame = Toplevel()
         table = read_data_from_db()
         sorted_table = self.sort_db_table(table)
-        message, applications = self.create_message(frame, sorted_table)
+        message, applications = self.create_message(sorted_table)
         self.create_display(frame, message, applications)
         self.back_button(frame)
-
 
     def sort_db_table(self, table):
         """Matches each entry label with entry data"""
@@ -89,10 +89,10 @@ class Read:
         for item in table:
             entry = dict((zip(entrybox_labels, item)))
             zipped_list.append(entry)
-
+        print(zipped_list)
         return zipped_list
 
-    def create_message(self, frame, sorted_table):
+    def create_message(self, sorted_table):
         """Creates string to view in Text widget"""
         message = ''
         seperator = '-' * 30
@@ -111,16 +111,41 @@ class Read:
         message_display = Text(frame)
         message_display.insert(END, message)
         message_scroll = Scrollbar(frame, command=message_display.yview)
-        message_display.config(yscrollcommand=message_scroll.set)
+        message_display.config(state='disabled', yscrollcommand=message_scroll.set)
         message_display.pack(side=LEFT)
         message_scroll.pack(side=RIGHT, fill=Y)
     
-    
-    def back_button(self, frame):
-        Button(frame, text='Go Back', command=frame.destroy).pack(side=BOTTOM, anchor=S)
 
-    # def scrollable(self, event, canvas):
-    #     canvas.yview_scroll(int(-1*(event.delta/100)), "units")
+    def back_button(self, frame):
+        Button(frame, text='Go Back', command=frame.destroy).pack(side=BOTTOM)
+
+class ReadSearch(Read):
+    """Searchs specific queries from user adn displays them"""
+    def __init__(self):
+        super().__init__()
+
+    def read(self):
+        frame = Toplevel()
+        Label(frame, text='Select parameter to search:').pack(side=TOP)
+        labels = [entrybox_labels[0], entrybox_labels[2], entrybox_labels[3]]
+        radio_var = StringVar()
+        for title in labels:
+            button = Radiobutton(frame, text=title, variable=radio_var, value=title)
+            button.deselect()
+            button.pack(side=TOP, anchor=W)
+        Label(frame, text='Enter search query for selection').pack(side=TOP)
+        entry_var = StringVar()
+        Entry(frame, textvariable=entry_var).pack()
+        Button(frame, text='Run Search', command=lambda: self.create_query(radio_var.get(), entry_var.get())).pack(anchor=SE)
+        self.back_button(frame)
+        
+    def create_query(self, label, query):
+        print(label, query)
+        table = read_data_from_db(read_all=False, label=label, query=query)
+        sorted_table = self.sort_db_table(table)
+        message, applications = self.create_message(sorted_table)
+        self.create_display(Toplevel(), message, applications)
+
 
 class Update:
     def __init__(self):
@@ -135,12 +160,4 @@ class Delete:
 
     def delete(self):
         frame = Toplevel()
-
-class Test:
-    def __init__(self) -> None:
-        self.test()
-
-    def test(self):
-        pass
-
 

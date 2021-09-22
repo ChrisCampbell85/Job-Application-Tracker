@@ -51,13 +51,16 @@ def populate_db(entry_variables):
     con.close()
 
 
-def read_data_from_db():
+def read_data_from_db(read_all=True, label=None, query=None):
     """
-    Read data from database.
+    Read all data from database.
     execute the given sql statement and return the results
     """
-    sql_query = ''' SELECT company, contact_details, position, hiring_platform, misc_details, date_applied FROM job_applications; '''
-    
+    if read_all:
+        sql_query = ''' SELECT company, contact_details, position, hiring_platform, misc_details, date_applied FROM job_applications; '''
+    else:
+        sql_query = f''' SELECT company, contact_details, position, hiring_platform, misc_details, date_applied FROM job_applications WHERE {label} LIKE "{query}%"; '''
+
     con = get_database_connection()
     cur = con.cursor()
 
@@ -68,8 +71,3 @@ def read_data_from_db():
     con.close()
 
     return results
-
-def test_dynamic_query(user_input):
-    """Test function for dynamic query based on user input"""
-    sql_query = ''.join()
-    pass
