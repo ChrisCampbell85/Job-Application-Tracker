@@ -4,7 +4,7 @@ from interact_db import create_db
 """
 This is the base frame for the GUI
 """
-toplevels = {'Create': Create, 'Display All': Read,'Search': ReadSearch, 'Update': Update, 'Delete': Delete}
+toplevels = {'Create': Create, 'Display All': Read, 'Search': ReadSearch, 'Update': Update, 'Delete': Delete}
 
 class Homepage(Frame):
     def __init__(self, master=None):

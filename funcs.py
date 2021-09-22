@@ -5,7 +5,7 @@ from tkcalendar import DateEntry
 
 """ Functions for HomePage button callbacks """
 
-entrybox_labels = ['company','contact_details','position','hiring_platform','misc_details','date_applied']
+db_columns = ['company','contact_details','position','hiring_platform','misc_details','date_applied']
 
 class Create:
     """Creates Toplevel for application entry"""
@@ -25,11 +25,11 @@ class Create:
                 
     def create_entries(self, frame):
         """Populates Toplevel frame of Create class"""
-        for title in entrybox_labels:
-            if title != entrybox_labels[-1]:
+        for title in db_columns:
+            if title != db_columns[-1]:
                 Label(frame, text=title).grid()
                 entry_variable = StringVar()
-                if title == entrybox_labels[-2]:
+                if title == db_columns[-2]:
                     scroll_text = ScrolledText(frame, width=30, height=10)
                     scroll_text.grid()
                     self.scrolledtext_variables.append(scroll_text)
@@ -37,7 +37,7 @@ class Create:
                     Entry(frame, textvariable=entry_variable).grid(sticky='we')
                     self.entry_variables.append(entry_variable)
             else:
-                Label(frame, text=entrybox_labels[-1]).grid()
+                Label(frame, text=db_columns[-1]).grid()
                 date_entry = DateEntry(frame)
                 date_entry.grid()
                 self.date_variables.append(date_entry)
@@ -75,7 +75,7 @@ class Read:
         self.read()
 
     def read(self):
-        """Displays current entries in database"""
+        """Displays all entries in database"""
         frame = Toplevel()
         table = read_data_from_db()
         sorted_table = self.sort_db_table(table)
@@ -87,7 +87,7 @@ class Read:
         """Matches each entry label with entry data"""
         zipped_list = []
         for item in table:
-            entry = dict((zip(entrybox_labels, item)))
+            entry = dict((zip(db_columns, item)))
             zipped_list.append(entry)
         print(zipped_list)
         return zipped_list
@@ -120,16 +120,16 @@ class Read:
         Button(frame, text='Go Back', command=frame.destroy).pack(side=BOTTOM)
 
 class ReadSearch(Read):
-    """Searchs specific queries from user adn displays them"""
+    """Searchs specific queries from user and displays them"""
     def __init__(self):
         super().__init__()
 
+    # need to refactor
     def read(self):
         frame = Toplevel()
         Label(frame, text='Select parameter to search:').pack(side=TOP)
-        labels = [entrybox_labels[0], entrybox_labels[2], entrybox_labels[3]]
         radio_var = StringVar()
-        for title in labels:
+        for title in db_columns:
             button = Radiobutton(frame, text=title, variable=radio_var, value=title)
             button.deselect()
             button.pack(side=TOP, anchor=W)
