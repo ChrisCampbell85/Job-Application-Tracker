@@ -2,6 +2,8 @@ import sqlite3
 
 
 DB_NAME = 'applications.db'
+columns = ['company','contact_details','position','hiring_platform','misc_details','date_applied']
+table = 'job_applications'
 
 def get_database_connection():
     """
@@ -20,14 +22,14 @@ def create_db(create=True):
     on the database
     """
     if create:
-        create_table = """ CREATE TABLE IF NOT EXISTS job_applications (
-            ID          INTEGER PRIMARY KEY     AUTOINCREMENT,
-            company             TEXT                NOT NULL,
-            contact_details     TEXT                NOT NULL,
-            position            TEXT                NOT NULL,
-            hiring_platform     TEXT                NOT NULL,
-            misc_details        TEXT                NULL,
-            date_applied        CHAR(15)            NULL
+        create_table = f""" CREATE TABLE IF NOT EXISTS {table} (
+            ID              INTEGER PRIMARY KEY AUTOINCREMENT,
+            {columns[0]}    TEXT                NOT NULL,
+            {columns[1]}    TEXT                NOT NULL,
+            {columns[2]}    TEXT                NOT NULL,
+            {columns[3]}    TEXT                NOT NULL,
+            {columns[4]}    TEXT                NULL,
+            {columns[5]}    CHAR(15)            NULL
 
         )   
         """
@@ -44,7 +46,7 @@ def populate_db(entry_variables):
 
     to_execute = [entry_variables]
 
-    add_data_stmt = ''' INSERT INTO job_applications (company,contact_details,position,hiring_platform,misc_details,date_applied) VALUES(?,?,?,?,?,?); '''
+    add_data_stmt = f''' INSERT INTO {table} ({columns[0]},{columns[1]},{columns[2]},{columns[3]},{columns[4]},{columns[5]}) VALUES(?,?,?,?,?,?); '''
     con = get_database_connection()
     con.executemany(add_data_stmt, to_execute)
     con.commit()
@@ -54,12 +56,11 @@ def populate_db(entry_variables):
 def read_data_from_db(read_all=True, label=None, query=None):
     """
     Read all data from database.
-    execute the given sql statement and return the results
     """
     if read_all:
-        sql_query = ''' SELECT company, contact_details, position, hiring_platform, misc_details, date_applied FROM job_applications; '''
+        sql_query = f''' SELECT {columns[0]}, {columns[1]}, {columns[2]}, {columns[3]}, {columns[4]}, {columns[5]} FROM {table}; '''
     else:
-        sql_query = f''' SELECT company, contact_details, position, hiring_platform, misc_details, date_applied FROM job_applications WHERE {label} LIKE "{query}%"; '''
+        sql_query = f''' SELECT {columns[0]}, {columns[1]}, {columns[2]}, {columns[3]}, {columns[4]}, {columns[5]} FROM {table} WHERE {label} LIKE "{query}%"; '''
 
     con = get_database_connection()
     cur = con.cursor()

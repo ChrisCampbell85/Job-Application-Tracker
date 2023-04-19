@@ -1,12 +1,12 @@
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
-from interact_db import populate_db, read_data_from_db
+from interact_db import populate_db, read_data_from_db, columns
 from tkcalendar import DateEntry
 
 """ Functions for HomePage button callbacks """
 
-db_columns = ['company','contact_details','position','hiring_platform','misc_details','date_applied']
-
+# db_columns = ['company','contact_details','position','hiring_platform','misc_details','date_applied']
+db_columns = columns
 class Create:
     """Creates Toplevel for application entry"""
     def __init__(self):
@@ -140,7 +140,7 @@ class ReadSearch(Read):
         self.back_button(frame)
         
     def create_query(self, label, query):
-        print(label, query)
+        print(f'Parameter: {label}\nSearched for: {query}')
         table = read_data_from_db(read_all=False, label=label, query=query)
         sorted_table = self.sort_db_table(table)
         message, applications = self.create_message(sorted_table)

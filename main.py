@@ -5,13 +5,14 @@ from interact_db import create_db
 This is the base frame for the GUI
 """
 toplevels = {'Create': Create, 'Display All': Read, 'Search': ReadSearch, 'Update': Update, 'Delete': Delete}
+app_title = 'Job Application Tracker'
 
 class Homepage(Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
         self.pack()
-        Label(self, text='Job Application Tracker').grid(row=0)
+        Label(self, text=app_title).grid(row=0)
         self.create_buttons()
         self.quit_button(self)
 
