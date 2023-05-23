@@ -1,24 +1,22 @@
 from tkinter import *
+# from tkinter.ttk import *
 from tkinter.scrolledtext import ScrolledText
 from interact_db import populate_db, read_data_from_db, columns
 from tkcalendar import DateEntry
 
 """ Functions for HomePage button callbacks """
 
-# db_columns = ['company','contact_details','position','hiring_platform','misc_details','date_applied']
 db_columns = columns
+# style = Style()
 class Create:
     """Creates Toplevel for application entry"""
     def __init__(self):
-        self.create()
-
-    def create(self):
         """Creates Toplevel for entries and Date Appiled and Save buttons"""
         self.scrolledtext_variables = []
         self.entry_variables = []
         self.date_variables = []
         frame = Toplevel()
-        Label(frame, text='Enter Job Application').grid()
+        label = Label(frame, text='Enter Job Application').grid()
         self.create_entries(frame)
         self.save_entries(frame)
         self.back_button(frame)
@@ -26,6 +24,7 @@ class Create:
     def create_entries(self, frame):
         """Populates Toplevel frame of Create class"""
         for title in db_columns:
+            title = title.capitalize().replace('_', ' ')
             if title != db_columns[-1]:
                 Label(frame, text=title).grid()
                 entry_variable = StringVar()
@@ -45,7 +44,7 @@ class Create:
 
     def save_entries(self, frame):
         """Button that saves entry objects to database"""
-        button = Button(frame, text='Save', command=lambda: self.save_handler(frame))
+        button = Button(frame, text='Save', font='11', command=lambda: self.save_handler(frame))
         button.grid(row=60, sticky=SE)
 
     def save_handler(self, frame):
@@ -67,7 +66,7 @@ class Create:
         return converted_variables
 
     def back_button(self, frame):
-        Button(frame, text='Go Back', command=frame.destroy).grid(row=60, sticky=S)
+        Button(frame, text='Go Back', font='6', command=frame.destroy).grid(row=60, sticky=S)
 
         
 class Read:
@@ -95,10 +94,12 @@ class Read:
     def create_message(self, sorted_table):
         """Creates string to view in Text widget"""
         message = ''
-        seperator = '-' * 30
+        # seperator = '-' * 30
         for application in sorted_table:
-            message += f'{seperator}\n'
+            message += '\n'
             for label, entry in application.items():
+                label = label.capitalize().replace('_', ' ')
+                entry = entry.capitalize().replace('_', ' ')
                 text_label = f'{label}: {entry}\n'
                 message += text_label
         applications = len(sorted_table)
@@ -107,8 +108,13 @@ class Read:
 
     def create_display(self, frame, message, applications):
         """Insert message into Text widget, add a scrollbar"""
-        Label(frame, text=f'You have applied for {applications} postions').pack()
-        message_display = Text(frame)
+        position = 'position'
+        if applications > 1:
+            position = position + 's'
+        else:
+            position
+        Label(frame, text=f'You have applied for {applications} {position}', font='8').pack()
+        message_display = Text(frame, font='7')
         message_display.insert(END, message)
         message_scroll = Scrollbar(frame, command=message_display.yview)
         message_display.config(state='disabled', yscrollcommand=message_scroll.set)
@@ -117,23 +123,22 @@ class Read:
     
 
     def back_button(self, frame):
-        Button(frame, text='Go Back', command=frame.destroy).pack(side=BOTTOM)
+        Button(frame, text='Go Back', font='2', command=frame.destroy).pack(side=BOTTOM)
 
-class ReadSearch(Read):
+class Search(Read):
     """Searchs specific queries from user and displays them"""
     def __init__(self):
         super().__init__()
-
     # need to refactor
     def read(self):
         frame = Toplevel()
-        Label(frame, text='Select parameter to search:').pack(side=TOP)
+        Label(frame, text='Select parameter to search:', font='11').pack(side=TOP)
         radio_var = StringVar()
         for title in db_columns:
-            button = Radiobutton(frame, text=title, variable=radio_var, value=title)
-            button.deselect()
+            title_clean = title.replace('_', ' ').capitalize()    # clean up column names
+            button = Radiobutton(frame, text=title_clean, font='15', variable=radio_var, value=title)
             button.pack(side=TOP, anchor=W)
-        Label(frame, text='Enter search query for selection').pack(side=TOP)
+        Label(frame, text='Enter search query for selection', font='3').pack(side=TOP)
         entry_var = StringVar()
         Entry(frame, textvariable=entry_var).pack()
         Button(frame, text='Run Search', command=lambda: self.create_query(radio_var.get(), entry_var.get())).pack(anchor=SE)

@@ -1,10 +1,12 @@
 from tkinter import *
-from funcs import Create, Read, ReadSearch, Update, Delete
+# from tkinter.ttk import *
+from PIL import ImageTk, Image
+from funcs import Create, Read, Search, Update, Delete
 from interact_db import create_db
 """
 This is the base frame for the GUI
 """
-toplevels = {'Create': Create, 'Display All': Read, 'Search': ReadSearch, 'Update': Update, 'Delete': Delete}
+toplevels = {'Create': Create, 'Display All': Read, 'Search': Search, 'Update': Update, 'Delete': Delete}
 app_title = 'Job Application Tracker'
 
 class Homepage(Frame):
@@ -12,15 +14,15 @@ class Homepage(Frame):
         super().__init__(master)
         self.master = master
         self.pack()
-        Label(self, text=app_title).grid(row=0)
+        # img = ImageTk.PhotoImage(Image.open("coal_harbour.jpg"))
+        Label(self, text=app_title, font='8').grid(row=0)
         self.create_buttons()
         self.quit_button(self)
 
     def create_buttons(self):
         for title, func in toplevels.items():
-            Button(self, text=title, command=func).grid(sticky='we', ipady=10, ipadx=40)
+            Button(self, text=title, font='10', command=func).grid(sticky='we', ipady=10, ipadx=40)
 
-    # quit program
     def quit_button(self,frame):
         Button(frame, text='Quit', command=frame.quit).grid(row=60, sticky=SE)
 

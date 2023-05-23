@@ -7,10 +7,9 @@ table = 'job_applications'
 
 def get_database_connection():
     """
-    this function should create a connection
-    to the database and return the connection
+    this function creates a connection
+    to the database and returns the connection
     """
-
     con = sqlite3.connect(DB_NAME)
     # con = sqlite3.connect(':memory:')
     return con
@@ -18,8 +17,6 @@ def get_database_connection():
 def create_db(create=True):
     """
     Creates a table ready to accept our data.
-    write code that will execute the given sql statment
-    on the database
     """
     if create:
         create_table = f""" CREATE TABLE IF NOT EXISTS {table} (
@@ -40,10 +37,7 @@ def create_db(create=True):
 def populate_db(entry_variables):
     """
     Populate the table database.
-    write code that will use the given sql statement to populate
-    the new table with the contract_list data
     """   
-
     to_execute = [entry_variables]
 
     add_data_stmt = f''' INSERT INTO {table} ({columns[0]},{columns[1]},{columns[2]},{columns[3]},{columns[4]},{columns[5]}) VALUES(?,?,?,?,?,?); '''
@@ -55,12 +49,14 @@ def populate_db(entry_variables):
 
 def read_data_from_db(read_all=True, label=None, query=None):
     """
-    Read all data from database.
+    Read data from database.
     """
+    statement = f'SELECT {columns[0]}, {columns[1]}, {columns[2]}, {columns[3]}, {columns[4]}, {columns[5]} FROM {table}'
     if read_all:
-        sql_query = f''' SELECT {columns[0]}, {columns[1]}, {columns[2]}, {columns[3]}, {columns[4]}, {columns[5]} FROM {table}; '''
+        sql_query = f''' {statement}; '''
     else:
-        sql_query = f''' SELECT {columns[0]}, {columns[1]}, {columns[2]}, {columns[3]}, {columns[4]}, {columns[5]} FROM {table} WHERE {label} LIKE "{query}%"; '''
+        sql_query = f''' {statement} WHERE {label} LIKE "{query}%"; '''
+        print(sql_query)
 
     con = get_database_connection()
     cur = con.cursor()
