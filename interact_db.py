@@ -2,7 +2,7 @@ import sqlite3
 
 
 DB_NAME = 'applications.db'
-columns = ['company','contact_details','position','hiring_platform','misc_details','date_applied']
+columns = ('company','contact_details','position','hiring_platform','misc_details','date_applied')
 table = 'job_applications'
 
 def get_database_connection():
@@ -39,7 +39,6 @@ def populate_db(entry_variables):
     Populate the table database.
     """   
     to_execute = [entry_variables]
-
     add_data_stmt = f''' INSERT INTO {table} ({columns[0]},{columns[1]},{columns[2]},{columns[3]},{columns[4]},{columns[5]}) VALUES(?,?,?,?,?,?); '''
     con = get_database_connection()
     con.executemany(add_data_stmt, to_execute)

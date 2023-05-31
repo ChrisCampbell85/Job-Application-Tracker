@@ -1,13 +1,13 @@
 from tkinter import *
-# from tkinter.ttk import *
 from tkinter.scrolledtext import ScrolledText
 from interact_db import populate_db, read_data_from_db, columns
 from tkcalendar import DateEntry
+from preprocessing import format_column_names
 
 """ Functions for HomePage button callbacks """
 
 db_columns = columns
-# style = Style()
+
 class Create:
     """Creates Toplevel for application entry"""
     def __init__(self):
@@ -30,7 +30,7 @@ class Create:
     def create_label(self, frame):
         columns = db_columns[:4]    # all labels               
         for title in columns:
-            title = title.capitalize().replace('_', ' ')
+            title = format_column_names(title)
             Label(frame, text=title, font='50').grid(padx=100, pady=10)
             entry_variable = StringVar()
             Entry(frame, textvariable=entry_variable).grid(sticky='we', padx=15)
@@ -66,7 +66,7 @@ class Create:
             converted_variables.append(item.get())
         for item in self.scrolledtext_variables:
             converted_variables.append(item.get('1.0', 'end-1c'))
-        # date output converted to str, year/month/day
+        # date output converted to str > year/month/day
         for item in self.date_variables:
             converted_variables.append(str(item.get_date()))
 
@@ -101,12 +101,11 @@ class Read:
     def create_message(self, sorted_table):
         """Creates string to view in Text widget"""
         message = ''
-        # seperator = '-' * 30
         for application in sorted_table:
             message += '\n'
             for label, entry in application.items():
-                label = label.capitalize().replace('_', ' ')
-                entry = entry.capitalize().replace('_', ' ')
+                label = format_column_names(label)
+                entry = format_column_names(entry)
                 text_label = f'{label}: {entry}\n'
                 message += text_label
         applications = len(sorted_table)
@@ -148,7 +147,7 @@ class Search(Read):
     def create_menu(self, frame):
         radio_var = StringVar()
         for title in db_columns:
-            title_clean = title.replace('_', ' ').capitalize()    # clean up column names
+            title_clean = format_column_names(title)
             button = Radiobutton(frame, text=title_clean, font='15', variable=radio_var, value=title)
             button.pack(side=TOP, anchor=W)
         return radio_var

@@ -1,7 +1,7 @@
 from tkinter import *
 # from tkinter.ttk import *
 from PIL import ImageTk, Image
-from funcs import Create, Read, Search, Update, Delete
+from buttons import Create, Read, Search, Update, Delete
 from interact_db import create_db
 """
 This is the base frame for the GUI
@@ -20,8 +20,8 @@ class Homepage(Frame):
         self.quit_button(self)
 
     def create_buttons(self):
-        for title, func in toplevels.items():
-            Button(self, text=title, font='10', padx=100, command=func).grid(sticky='we', ipady=30, ipadx=40)
+        for title, cls in toplevels.items():
+            Button(self, text=title, font='10', padx=100, command=cls).grid(sticky='we', ipady=30, ipadx=40)
 
     def quit_button(self,frame):
         Button(frame, text='Quit', command=frame.quit).grid(row=60, sticky=SE)
