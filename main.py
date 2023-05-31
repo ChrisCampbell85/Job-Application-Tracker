@@ -15,13 +15,13 @@ class Homepage(Frame):
         self.master = master
         self.pack()
         # img = ImageTk.PhotoImage(Image.open("coal_harbour.jpg"))
-        Label(self, text=app_title, font='8').grid(row=0)
+        Label(self, text=app_title, font='30').grid(row=0)
         self.create_buttons()
         self.quit_button(self)
 
     def create_buttons(self):
         for title, func in toplevels.items():
-            Button(self, text=title, font='10', command=func).grid(sticky='we', ipady=10, ipadx=40)
+            Button(self, text=title, font='10', padx=100, command=func).grid(sticky='we', ipady=30, ipadx=40)
 
     def quit_button(self,frame):
         Button(frame, text='Quit', command=frame.quit).grid(row=60, sticky=SE)
