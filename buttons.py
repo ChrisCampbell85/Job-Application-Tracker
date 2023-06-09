@@ -1,8 +1,9 @@
 from tkinter import *
+from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 from interact_db import populate_db, read_data_from_db, columns
 from tkcalendar import DateEntry
-from preprocessing import format_column_names
+from configs import format_string
 
 """ Functions for HomePage button callbacks """
 
@@ -16,7 +17,8 @@ class Create:
         self.entry_variables = []
         self.date_variables = []
         frame = Toplevel()
-        Label(frame, text='Enter Job Application', font='30').grid()
+        label = 'Enter Job Application'
+        ttk.Label(frame, text=label, font='30').grid()
         self.create_menu(frame)
         self.save_entries(frame)
         self.back_button(frame)
@@ -24,35 +26,35 @@ class Create:
     def create_menu(self, frame):
         """Populates Toplevel frame of Create class"""
         self.create_label(frame)
-        self.create_scroll(frame)
+        self.create_misc_details(frame)
         self.create_date_entry(frame)
 
     def create_label(self, frame):
-        columns = db_columns[:4]    # all labels               
+        columns = db_columns[:4]               
         for title in columns:
-            title = format_column_names(title)
-            Label(frame, text=title, font='50').grid(padx=100, pady=10)
+            title = format_string(title)
+            ttk.Label(frame, text=title, font='30').grid(padx=100, pady=10)
             entry_variable = StringVar()
-            Entry(frame, textvariable=entry_variable).grid(sticky='we', padx=15)
+            ttk.Entry(frame, textvariable=entry_variable).grid(sticky='we', padx=9)
             self.entry_variables.append(entry_variable)
 
-    def create_scroll(self, frame):
-        title = db_columns[-2]
-        Label(frame, text=title, font='50').grid(padx=100, pady=10)
+    def create_misc_details(self, frame):
+        title = format_string(db_columns[-2])
+        ttk.Label(frame, text=title, font='30').grid(padx=100, pady=10)
         scroll_text = ScrolledText(frame, width=100, height=20)
         scroll_text.grid()
         self.scrolledtext_variables.append(scroll_text)
 
     def create_date_entry(self, frame):
-        title = db_columns[-1]
-        Label(frame, text=title).grid()
+        title = format_string(db_columns[-1])
+        ttk.Label(frame, text=title, font='30').grid()
         date_entry = DateEntry(frame)
         date_entry.grid()
         self.date_variables.append(date_entry)
 
     def save_entries(self, frame):
         """Button that saves entry objects to database"""
-        button = Button(frame, text='Save', font='11', command=lambda: self.save_handler(frame))
+        button = ttk.Button(frame, text='Save', command=lambda: self.save_handler(frame))
         button.grid(row=60, sticky=SE)
 
     def save_handler(self, frame):
@@ -73,10 +75,10 @@ class Create:
         return converted_variables
 
     def back_button(self, frame):
-        Button(frame, text='Go Back', font='6', command=frame.destroy).grid(row=60, sticky=S)
+        ttk.Button(frame, text='Go Back', command=frame.destroy).grid(row=60, sticky=W)
 
         
-class Read:
+class Display:
     def __init__(self):
         self.read()
 
@@ -90,13 +92,13 @@ class Read:
         self.back_button(frame)
 
     def sort_db_table(self, table):
-        """Matches each entry label with entry data"""
-        zipped_list = []
+        """Matches each entry label with entry data. Returns list containing dict of database records"""
+        sorted_database_list = []
         for item in table:
             entry = dict((zip(db_columns, item)))
-            zipped_list.append(entry)
-        print(zipped_list)
-        return zipped_list
+            sorted_database_list.append(entry)
+        
+        return sorted_database_list
 
     def create_message(self, sorted_table):
         """Creates string to view in Text widget"""
@@ -104,8 +106,8 @@ class Read:
         for application in sorted_table:
             message += '\n'
             for label, entry in application.items():
-                label = format_column_names(label)
-                entry = format_column_names(entry)
+                label = format_string(label)
+                entry = format_string(entry, column=False)
                 text_label = f'{label}: {entry}\n'
                 message += text_label
         applications = len(sorted_table)
@@ -119,27 +121,30 @@ class Read:
             position = position + 's'
         else:
             position
-        Label(frame, text=f'You have applied for {applications} {position}', font='8').pack()
-        message_display = Text(frame, font='7')
+        label_text = f'You have applied for {applications} {position}'
+        ttk.Label(master=frame, text=label_text, font='8').pack()
+        message_display = Text(master=frame, font='7')
         message_display.insert(END, message)
-        message_scroll = Scrollbar(frame, command=message_display.yview)
+        message_scroll = ttk.Scrollbar(master=frame, command=message_display.yview)
         message_display.config(state='disabled', yscrollcommand=message_scroll.set)
         message_display.pack(side=LEFT)
         message_scroll.pack(side=RIGHT, fill=Y)
     
     def back_button(self, frame):
-        Button(frame, text='Go Back', font='2', command=frame.destroy).pack(side=BOTTOM)
+        ttk.Button(master=frame, text='Go Back', command=frame.destroy).pack(padx=15)
 
-class Search(Read):
+class Search(Display):
     """Searchs specific queries from user and displays them"""
     def __init__(self):
         super().__init__()
     
     def read(self):
-        frame = Toplevel()
-        Label(frame, text='Select parameter to search:', font='11').pack(side=TOP)
+        frame = Toplevel(width=300, height=500)
+        select_param = 'Select parameter to search:'
+        enter_search = 'Enter search query for selection'
+        ttk.Label(frame, text=select_param).pack(side=TOP, fill='both')
         radio_variable = self.create_menu(frame)
-        Label(frame, text='Enter search query for selection', font='3').pack(side=TOP)
+        ttk.Label(frame, text=enter_search).pack(side=TOP, fill='both')
         entry_variable = self.create_entry(frame)
         self.create_search_button(frame, radio_variable, entry_variable)
         self.back_button(frame)
@@ -147,18 +152,18 @@ class Search(Read):
     def create_menu(self, frame):
         radio_var = StringVar()
         for title in db_columns:
-            title_clean = format_column_names(title)
-            button = Radiobutton(frame, text=title_clean, font='15', variable=radio_var, value=title)
+            title_clean = format_string(title)
+            button = ttk.Radiobutton(frame, text=title_clean, variable=radio_var, value=title, width=50, padding=3)
             button.pack(side=TOP, anchor=W)
         return radio_var
     
     def create_entry(self, frame):
         entry_var = StringVar()
-        Entry(frame, textvariable=entry_var).pack()
+        ttk.Entry(frame, textvariable=entry_var).pack(fill='both', padx=15)
         return entry_var
     
     def create_search_button(self, frame, radio_variable, entry_variable):
-        Button(frame, text='Run Search', command=lambda: self.create_query(label=radio_variable.get(), query=entry_variable.get())).pack(anchor=SE)
+        ttk.Button(frame, text='Run Search', command=lambda: self.create_query(label=radio_variable.get(), query=entry_variable.get())).pack()
 
     def create_query(self, label, query):
         print(f'Parameter: {label}\nSearched for: {query}')
@@ -166,6 +171,43 @@ class Search(Read):
         sorted_table = self.sort_db_table(table)
         message, applications = self.create_message(sorted_table)
         self.create_display(Toplevel(), message, applications)
+
+class Positions(Display):
+
+    def __init__(self) -> None:
+        super().__init__()
+    
+    def read(self):
+        """Displays all entries in database"""
+        frame = Toplevel()
+        table = read_data_from_db()
+        sorted_table = self.sort_db_table(table)
+        self.create_display(frame, sorted_table)
+        self.back_button(frame)
+
+    def create_message(self, application):
+        message = ''
+        for label, entry in application.items():
+                label = format_string(label)
+                entry = format_string(entry, column=False)
+                text_label = f'{label}: {entry}\n'
+                message += text_label
+
+        return message
+        
+    def create_display(self, frame, sorted_table): # create frame to hold the labels of positions applied for with company in (): Dev (Hootsuite)
+        for application in sorted_table:
+            message = self.create_message(application)
+            self.create_button(frame, message, application)
+  
+    def create_button(self, frame, message, application):
+        button_text = f'{application["position"]}: {application["company"]}'
+        ttk.Button(master=frame, text=button_text, command=lambda: self.button_info(message)).pack(padx=15, fill='both')
+    
+    def button_info(self, message):
+        frame = Toplevel()
+        ttk.Label(master=frame, text=message, font='8').pack(padx=30)
+
 
 class Update:
     def __init__(self):

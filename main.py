@@ -1,34 +1,40 @@
 from tkinter import *
-# from tkinter.ttk import *
+from tkinter import ttk
 from PIL import ImageTk, Image
-from buttons import Create, Read, Search, Update, Delete
+from buttons import Create, Display, Positions, Search, Update, Delete
 from interact_db import create_db
+from configs import style_tbutton
 """
 This is the base frame for the GUI
 """
-toplevels = {'Create': Create, 'Display All': Read, 'Search': Search, 'Update': Update, 'Delete': Delete}
+toplevels = {'Create Application': Create, 'Display All': Display, 'Position Overview': Positions, 'Search Positions': Search, 'Update': Update, 'Delete': Delete}
 app_title = 'Job Application Tracker'
 
 class Homepage(Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
-        self.pack()
+        self.pack(fill='both')
         # img = ImageTk.PhotoImage(Image.open("coal_harbour.jpg"))
-        Label(self, text=app_title, font='30').grid(row=0)
+        # Label(self, text=app_title, font='30').grid(row=0)
         self.create_buttons()
         self.quit_button(self)
 
+
     def create_buttons(self):
+        style_tbutton()
         for title, cls in toplevels.items():
-            Button(self, text=title, font='10', padx=100, command=cls).grid(sticky='we', ipady=30, ipadx=40)
+            ttk.Button(self, text=title, command=cls).pack(fill='both', padx=10, pady=1)
+            
 
     def quit_button(self,frame):
-        Button(frame, text='Quit', command=frame.quit).grid(row=60, sticky=SE)
+        ttk.Button(frame, text='Quit', command=frame.quit).pack()
 
 
 if __name__ == "__main__":
     create_db()
     root = Tk()
+    root.title('Application Tracker')
+    root.geometry('300x310')
     app = Homepage(master=root)
     app.mainloop()
