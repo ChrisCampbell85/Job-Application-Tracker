@@ -1,13 +1,13 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import ImageTk, Image
-from buttons import Create, Display, Positions, Search, Update, Delete
+from buttons import Create, Display, Positions, Search, Update
 from interact_db import create_db
 from configs import style_tbutton
 """
 This is the base frame for the GUI
 """
-toplevels = {'Create Application': Create, 'Display All': Display, 'Position Overview': Positions, 'Search Positions': Search, 'Update': Update, 'Delete': Delete}
+toplevels = {'Create Application': Create, 'Display All': Display, 'Position Overview': Positions, 'Search Positions': Search, 'Update': Update}
 app_title = 'Job Application Tracker'
 
 class Homepage(Frame):
@@ -24,7 +24,7 @@ class Homepage(Frame):
     def create_buttons(self):
         style_tbutton()
         for title, cls in toplevels.items():
-            ttk.Button(self, text=title, command=cls).pack(fill='both', padx=10, pady=1)
+            ttk.Button(self, text=title, command=cls).pack(fill='both', padx=10, pady=10)
             
 
     def quit_button(self,frame):
@@ -35,6 +35,6 @@ if __name__ == "__main__":
     create_db()
     root = Tk()
     root.title('Application Tracker')
-    root.geometry('300x310')
+    root.geometry('300x360')
     app = Homepage(master=root)
     app.mainloop()

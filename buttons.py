@@ -1,7 +1,8 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from tkinter.scrolledtext import ScrolledText
-from interact_db import populate_db, read_data_from_db, columns
+from interact_db import populate_db, read_data_from_db, delete_from_db ,columns
 from tkcalendar import DateEntry
 from configs import format_string
 
@@ -19,6 +20,7 @@ class Create:
         frame = Toplevel()
         label = 'Enter Job Application'
         ttk.Label(frame, text=label, font='30').grid()
+        frame.focus()
         self.create_menu(frame)
         self.save_entries(frame)
         self.back_button(frame)
@@ -41,7 +43,7 @@ class Create:
     def create_misc_details(self, frame):
         title = format_string(db_columns[-2])
         ttk.Label(frame, text=title, font='30').grid(padx=100, pady=10)
-        scroll_text = ScrolledText(frame, width=100, height=20)
+        scroll_text = ScrolledText(frame, width=40, height=10)
         scroll_text.grid()
         self.scrolledtext_variables.append(scroll_text)
 
@@ -58,7 +60,8 @@ class Create:
         button.grid(row=60, sticky=SE)
 
     def save_handler(self, frame):
-        populate_db(self.convert())
+        converted = self.convert()
+        populate_db(converted)
         frame.destroy()
 
     def convert(self):
@@ -90,8 +93,9 @@ class Display:
         message, applications = self.create_message(sorted_table)
         self.create_display(frame, message, applications)
         self.back_button(frame)
+        frame.focus()
 
-    def sort_db_table(self, table):
+    def sort_db_table(self, table): 
         """Matches each entry label with entry data. Returns list containing dict of database records"""
         sorted_database_list = []
         for item in table:
@@ -130,6 +134,9 @@ class Display:
         message_display.pack(side=LEFT)
         message_scroll.pack(side=RIGHT, fill=Y)
     
+    # def yes_cancel(self, frame, position):
+    #     return Positions.yes_cancel(self, frame, position)
+    
     def back_button(self, frame):
         ttk.Button(master=frame, text='Go Back', command=frame.destroy).pack(padx=15)
 
@@ -139,7 +146,7 @@ class Search(Display):
         super().__init__()
     
     def read(self):
-        frame = Toplevel(width=300, height=500)
+        frame = Toplevel()
         select_param = 'Select parameter to search:'
         enter_search = 'Enter search query for selection'
         ttk.Label(frame, text=select_param).pack(side=TOP, fill='both')
@@ -148,12 +155,13 @@ class Search(Display):
         entry_variable = self.create_entry(frame)
         self.create_search_button(frame, radio_variable, entry_variable)
         self.back_button(frame)
+        frame.focus()
 
     def create_menu(self, frame):
         radio_var = StringVar()
         for title in db_columns:
             title_clean = format_string(title)
-            button = ttk.Radiobutton(frame, text=title_clean, variable=radio_var, value=title, width=50, padding=3)
+            button = ttk.Radiobutton(frame, text=title_clean, variable=radio_var, value=title, width=30, padding=3)
             button.pack(side=TOP, anchor=W)
         return radio_var
     
@@ -163,11 +171,11 @@ class Search(Display):
         return entry_var
     
     def create_search_button(self, frame, radio_variable, entry_variable):
-        ttk.Button(frame, text='Run Search', command=lambda: self.create_query(label=radio_variable.get(), query=entry_variable.get())).pack()
+        ttk.Button(frame, text='Run Search', command=lambda: self.create_query(param=radio_variable.get(), query=entry_variable.get())).pack()
 
-    def create_query(self, label, query):
-        print(f'Parameter: {label}\nSearched for: {query}')
-        table = read_data_from_db(read_all=False, label=label, query=query)
+    def create_query(self, param, query):
+        print(f'Parameter: {param}\nSearched for: {query}')
+        table = read_data_from_db(read_all=False, param=param, query=query)
         sorted_table = self.sort_db_table(table)
         message, applications = self.create_message(sorted_table)
         self.create_display(Toplevel(), message, applications)
@@ -179,11 +187,12 @@ class Positions(Display):
     
     def read(self):
         """Displays all entries in database"""
-        frame = Toplevel()
+        self.frame = Toplevel()
         table = read_data_from_db()
         sorted_table = self.sort_db_table(table)
-        self.create_display(frame, sorted_table)
-        self.back_button(frame)
+        self.create_display(self.frame, sorted_table)
+        self.back_button(self.frame)
+        self.frame.focus()
 
     def create_message(self, application):
         message = ''
@@ -201,25 +210,38 @@ class Positions(Display):
             self.create_button(frame, message, application)
   
     def create_button(self, frame, message, application):
-        button_text = f'{application["position"]}: {application["company"]}'
-        ttk.Button(master=frame, text=button_text, command=lambda: self.button_info(message)).pack(padx=15, fill='both')
+        position = application["position"]
+        company = application["company"]
+        button_text = f'{position}: {company}'
+        ttk.Button(master=frame, text=button_text, command=lambda: self.button_info(message, position)).pack(padx=15, pady=5, fill='both')
     
-    def button_info(self, message):
+    def button_info(self, message, position):
         frame = Toplevel()
         ttk.Label(master=frame, text=message, font='8').pack(padx=30)
+        self.back_button(frame)
+        self.delete(frame, position)
+        frame.focus()
+    # @classmethod
+    def delete(self, frame, position):
+        return ttk.Button(frame, text='Delete record', command=lambda: self.yes_cancel(frame, position)).pack()
 
+    def yes_cancel(self, frame, position):
+        title = 'Delete?'
+        msg_box = messagebox.askokcancel(title=title, message='Are you sure?')
+        if msg_box:
+            delete_from_db(position)
+            frame.destroy()
+            self.frame.destroy()
 
 class Update:
     def __init__(self):
-        self.update()
+        frame = Toplevel()
+        
 
     def update(self):
-        frame = Toplevel()
+        pass
 
-class Delete:
-    def __init__(self):
-        self.delete()
+            
 
-    def delete(self):
-        frame = Toplevel()
+
 

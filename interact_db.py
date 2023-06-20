@@ -46,7 +46,7 @@ def populate_db(entry_variables):
     con.close()
 
 
-def read_data_from_db(read_all=True, label=None, query=None):
+def read_data_from_db(read_all=True, param=None, query=None):
     """
     Read data from database.
     """
@@ -54,7 +54,7 @@ def read_data_from_db(read_all=True, label=None, query=None):
     if read_all:
         sql_query = f''' {statement}; '''
     else:
-        sql_query = f''' {statement} WHERE {label} LIKE "{query}%"; '''
+        sql_query = f''' {statement} WHERE {param} LIKE "{query}%"; '''
         print(sql_query)
 
     con = get_database_connection()
@@ -65,5 +65,32 @@ def read_data_from_db(read_all=True, label=None, query=None):
 
     cur.close()
     con.close()
-
+    print(results)
     return results
+
+def sort_db_table(table, db_columns):
+        """Matches each entry label with entry data. Returns list containing dict of database records"""
+        sorted_database_list = []
+        for item in table:
+            entry = dict((zip(db_columns, item)))
+            sorted_database_list.append(entry)
+        
+        return sorted_database_list
+
+def delete_from_db(position):
+
+    try:
+        con = get_database_connection()
+        statement = f'''DELETE FROM {table} WHERE position = ?;'''
+        cur = con.cursor()
+        cur.execute(statement, (position,))
+        con.commit()
+        print('Record deleted')
+        cur.close()
+
+    except sqlite3.Error as error:
+        print('Failed to delete record', error)
+    finally:
+        if con:
+            con.close()
+            print('Connection closed')
