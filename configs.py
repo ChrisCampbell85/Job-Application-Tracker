@@ -1,6 +1,7 @@
 from tkinter import ttk
 
 def format_string(input: str, column=True):
+
         if column:
                 input = input.title().replace('_', ' ')
         else:

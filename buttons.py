@@ -5,7 +5,7 @@ from tkinter.scrolledtext import ScrolledText
 from interact_db import populate_db, read_data_from_db, delete_from_db ,columns
 from tkcalendar import DateEntry
 from configs import format_string
-
+from PIL import ImageTk, Image
 """ Functions for HomePage button callbacks """
 
 db_columns = columns
@@ -138,7 +138,7 @@ class Display:
     #     return Positions.yes_cancel(self, frame, position)
     
     def back_button(self, frame):
-        ttk.Button(master=frame, text='Go Back', command=frame.destroy).pack(padx=15)
+        ttk.Button(master=frame, text='Go Back', command=frame.destroy).pack()
 
 class Search(Display):
     """Searchs specific queries from user and displays them"""
@@ -222,8 +222,13 @@ class Positions(Display):
         self.delete(frame, position)
         frame.focus()
     # @classmethod
-    def delete(self, frame, position):
-        return ttk.Button(frame, text='Delete record', command=lambda: self.yes_cancel(frame, position)).pack()
+    def delete(self, frame, position):  # text='Delete record'
+        load_img = Image.open("delete.png")
+        resized_image = load_img.resize((70, 70))
+        rendered_img = ImageTk.PhotoImage(resized_image)
+        button = ttk.Button(frame, image=rendered_img, compound=CENTER, padding=0, command=lambda: self.yes_cancel(frame, position))
+        button.image = rendered_img
+        return button.pack()
 
     def yes_cancel(self, frame, position):
         title = 'Delete?'
@@ -232,6 +237,8 @@ class Positions(Display):
             delete_from_db(position)
             frame.destroy()
             self.frame.destroy()
+        else:
+            frame.focus()
 
 class Update:
     def __init__(self):
