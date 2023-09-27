@@ -4,7 +4,7 @@ from tkinter import messagebox
 from tkinter.scrolledtext import ScrolledText
 from interact_db import populate_db, read_data_from_db, delete_from_db, columns
 from tkcalendar import DateEntry
-from configs import format_string
+from configs import format_string,style_tbutton
 from PIL import ImageTk, Image
 
 DB_COLUMNS = columns
@@ -17,7 +17,7 @@ class Create:
         self.frame = Frame(root)
         self.frame.pack()
         self.mainMenuFrame = mainMenuFrame
-        ttk.Label(self.frame, text='Hello').pack()
+        ttk.Label(self.frame, text='Enter Job Application', font='30').pack(fill='y', pady=10)
         self.create_menu()
         self.save_entries()
         self.backButton()
@@ -60,24 +60,34 @@ class Create:
         button = ttk.Button(self.frame, text='Save', command=self.save_handler)
         button.pack()
 
+    # save handler needs a dialog box to pop up indicating a Save has occurred
     def save_handler(self):
         converted = self.convert()
         populate_db(converted)
-        self.frame.destroy()
+        self.backToMenu()
 
     def convert(self):
         """Converts all the entry objects to string for populate_db.py"""
-        converted_variables = []
+        self.converted_variables = []
+        self.convertEntry()
+        self.convertScroll()
+        self.convertScroll()
+
+        return self.converted_variables
+    
+    def convertEntry(self):
         for item in self.entry_variables:
-            converted_variables.append(item.get())
+            self.converted_variables.append(item.get())
+
+    def convertScroll(self):
         for item in self.scrolledtext_variables:
-            converted_variables.append(item.get('1.0', 'end-1c'))
+            self.converted_variables.append(item.get('1.0', 'end-1c'))
+    
+    def convertDate(self, converted_variables):
         # date output converted to str > year/month/day
         for item in self.date_variables:
-            converted_variables.append(str(item.get_date()))
-
-        return converted_variables
-        
+            self.converted_variables.append(str(item.get_date()))
+  
     def backButton(self):
         ttk.Button(self.frame, text='Back', command=self.backToMenu).pack()
 
@@ -100,10 +110,12 @@ class App:
 
     def configureRoot(self):
         self.root.title('Application Tracker')
-        self.root.geometry('300x360')
+        self.root.geometry('400x580')
 
     def homeButtons(self):
-            ttk.Button(self.frame, text=self.clsName.__str__(self), command=self.changeFrame).pack()
+        style_tbutton()
+        buttonName = self.clsName.__str__(self)
+        ttk.Button(self.frame, text=buttonName, command=self.changeFrame).pack(fill='both', padx=1, pady=10)
             
     def changeFrame(self):
         self.frame.pack_forget()
