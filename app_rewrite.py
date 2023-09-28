@@ -20,8 +20,11 @@ class Create:
         ttk.Label(self.frame, text='Enter Job Application', font='30').pack(fill='y', pady=10)
         self.create_menu()
         self.save_entries()
-        self.backButton()
-        self.quitButton()
+        utilityButtons(self.frame, self.mainMenuFrame).backButton()
+        utilityButtons(self.frame, self.mainMenuFrame).quitButton()
+        
+        # self.backButton()
+        # self.quitButton()
 
     def __str__(self):
         return 'Create Application'
@@ -87,7 +90,25 @@ class Create:
         # date output converted to str > year/month/day
         for item in self.date_variables:
             self.converted_variables.append(str(item.get_date()))
-  
+
+
+class Show:
+    def __init__(self, root, mainMenuFrame) -> None:
+        self.frame = Frame(root)
+        self.frame.pack()
+        self.mainMenuFrame = mainMenuFrame
+        ttk.Label(self.frame, text='Show ME', font='30').pack(fill='y', pady=10)
+        utilityButtons(self.frame, self.mainMenuFrame).backButton()
+        utilityButtons(self.frame, self.mainMenuFrame).quitButton()
+
+    def __str__(self):
+        return "Show All"
+        
+class utilityButtons:
+    def __init__(self, frame, mainMenuFrame) -> None:
+        self.frame = frame
+        self.mainMenuFrame = mainMenuFrame
+        
     def backButton(self):
         ttk.Button(self.frame, text='Back', command=self.backToMenu).pack()
 
@@ -97,10 +118,10 @@ class Create:
 
     def quitButton(self):
         ttk.Button(self.frame, text='Quit', command=self.frame.quit).pack()
+    
 
 class App:
     def __init__(self):
-        self.clsName = Create
         self.root = Tk()
         self.configureRoot()
         self.frame = Frame(master=self.root)
@@ -114,15 +135,13 @@ class App:
 
     def homeButtons(self):
         style_tbutton()
-        buttonName = self.clsName.__str__(self)
-        ttk.Button(self.frame, text=buttonName, command=self.changeFrame).pack(fill='both', padx=1, pady=10)
-            
-    def changeFrame(self):
-        self.frame.pack_forget()
-        self.clsName(self.root, self.frame)
+        createButton = ttk.Button(self.frame, text=Create.__str__(self), command=lambda: self.changeFrame(Create)).pack(fill='both', padx=1, pady=10)
+        showButton = ttk.Button(self.frame, text=Show.__str__(self), command=lambda: self.changeFrame(Show)).pack(fill='both', padx=1, pady=10)
+         
 
-        # self.buttons[]
-         # Hide frame2
+    def changeFrame(self, cls):
+        self.frame.pack_forget()
+        cls(self.root, self.frame)
         
 
 app = App()
