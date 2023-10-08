@@ -10,7 +10,7 @@ from PIL import ImageTk, Image
 DB_COLUMNS = columns
 
 class Create:
-    def __init__(self, root, mainMenuFrame):
+    def __init__(self, root, mainMenuFrame, utility_buttons):
         self.scrolledtext_variables = []
         self.entry_variables = []
         self.date_variables = []
@@ -20,11 +20,8 @@ class Create:
         ttk.Label(self.frame, text='Enter Job Application', font='30').pack(fill='y', pady=10)
         self.create_menu()
         self.save_entries()
-        utilityButtons(self.frame, self.mainMenuFrame).backButton()
-        utilityButtons(self.frame, self.mainMenuFrame).quitButton()
-        
-        # self.backButton()
-        # self.quitButton()
+        utility_buttons(self.frame, self.mainMenuFrame).back_button()
+        utility_buttons(self.frame, self.mainMenuFrame).quit_button()
 
     def __str__(self):
         return 'Create Application'
@@ -41,7 +38,7 @@ class Create:
             title = format_string(title)
             ttk.Label(self.frame, text=title, font='30').pack()
             entry_variable = StringVar()
-            ttk.Entry(self.frame, textvariable=entry_variable).pack()
+            ttk.Entry(self.frame, textvariable=entry_variable).pack(fill='x')
             self.entry_variables.append(entry_variable)
 
     def create_misc_details(self):
@@ -67,7 +64,7 @@ class Create:
     def save_handler(self):
         converted = self.convert()
         populate_db(converted)
-        self.backToMenu()
+        self.back_to_menu()
 
     def convert(self):
         """Converts all the entry objects to string for populate_db.py"""
@@ -91,15 +88,14 @@ class Create:
         for item in self.date_variables:
             self.converted_variables.append(str(item.get_date()))
 
-
 class Show:
-    def __init__(self, root, mainMenuFrame) -> None:
+    def __init__(self, root, mainMenuFrame, utility_buttons) -> None:
         self.frame = Frame(root)
         self.frame.pack()
         self.mainMenuFrame = mainMenuFrame
         ttk.Label(self.frame, text='Show ME', font='30').pack(fill='y', pady=10)
-        utilityButtons(self.frame, self.mainMenuFrame).backButton()
-        utilityButtons(self.frame, self.mainMenuFrame).quitButton()
+        utility_buttons(self.frame, self.mainMenuFrame).back_button()
+        utility_buttons(self.frame, self.mainMenuFrame).quit_button()
 
     def __str__(self):
         return "Show All"
@@ -109,14 +105,14 @@ class utilityButtons:
         self.frame = frame
         self.mainMenuFrame = mainMenuFrame
         
-    def backButton(self):
-        ttk.Button(self.frame, text='Back', command=self.backToMenu).pack()
+    def back_button(self):
+        ttk.Button(self.frame, text='Back', command=self.back_to_menu).pack()
 
-    def backToMenu(self):
+    def back_to_menu(self):
         self.frame.pack_forget()
         self.mainMenuFrame.pack()
 
-    def quitButton(self):
+    def quit_button(self):
         ttk.Button(self.frame, text='Quit', command=self.frame.quit).pack()
     
 
@@ -141,7 +137,7 @@ class App:
 
     def changeFrame(self, cls):
         self.frame.pack_forget()
-        cls(self.root, self.frame)
+        cls(self.root, self.frame, utilityButtons)
         
 
 app = App()
