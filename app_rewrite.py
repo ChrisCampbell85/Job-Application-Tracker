@@ -10,18 +10,19 @@ from PIL import ImageTk, Image
 DB_COLUMNS = columns
 
 class Create:
-    def __init__(self, root, mainMenuFrame, utility_buttons):
+    def __init__(self, root, main_menu_frame, utility_buttons):
         self.scrolledtext_variables = []
         self.entry_variables = []
         self.date_variables = []
         self.frame = Frame(root)
         self.frame.pack()
-        self.mainMenuFrame = mainMenuFrame
+        self.main_menu_frame = main_menu_frame
+        self.utility_buttons = utility_buttons
         ttk.Label(self.frame, text='Enter Job Application', font='30').pack(fill='y', pady=10)
         self.create_menu()
         self.save_entries()
-        utility_buttons(self.frame, self.mainMenuFrame).back_button()
-        utility_buttons(self.frame, self.mainMenuFrame).quit_button()
+        self.utility_buttons(self.frame, self.main_menu_frame).back_button()
+        self.utility_buttons(self.frame, self.main_menu_frame).quit_button()
 
     def __str__(self):
         return 'Create Application'
@@ -60,20 +61,18 @@ class Create:
         button = ttk.Button(self.frame, text='Save', command=self.save_handler)
         button.pack()
 
-    # save handler needs a dialog box to pop up indicating a Save has occurred
     def save_handler(self):
-        converted = self.convert()
-        populate_db(converted)
-        self.back_to_menu()
-
-    def convert(self):
         """Converts all the entry objects to string for populate_db.py"""
         self.converted_variables = []
         self.convertEntry()
         self.convertScroll()
         self.convertScroll()
+        populate_db(self.converted_variables)
+        self.save_complete()
 
-        return self.converted_variables
+    def save_complete(self):
+        messagebox.showinfo('Well Done', 'Save Completed')
+        self.utility_buttons.back_to_menu(self)
     
     def convertEntry(self):
         for item in self.entry_variables:
@@ -89,28 +88,28 @@ class Create:
             self.converted_variables.append(str(item.get_date()))
 
 class Show:
-    def __init__(self, root, mainMenuFrame, utility_buttons) -> None:
+    def __init__(self, root, main_menu_frame, utility_buttons) -> None:
         self.frame = Frame(root)
         self.frame.pack()
-        self.mainMenuFrame = mainMenuFrame
+        self.main_menu_frame = main_menu_frame
         ttk.Label(self.frame, text='Show ME', font='30').pack(fill='y', pady=10)
-        utility_buttons(self.frame, self.mainMenuFrame).back_button()
-        utility_buttons(self.frame, self.mainMenuFrame).quit_button()
+        self.back_button = utility_buttons(self.frame, self.main_menu_frame).back_button()
+        self.quit_button = utility_buttons(self.frame, self.main_menu_frame).quit_button()
 
     def __str__(self):
         return "Show All"
         
 class utilityButtons:
-    def __init__(self, frame, mainMenuFrame) -> None:
+    def __init__(self, frame, main_menu_frame) -> None:
         self.frame = frame
-        self.mainMenuFrame = mainMenuFrame
+        self.main_menu_frame = main_menu_frame
         
     def back_button(self):
         ttk.Button(self.frame, text='Back', command=self.back_to_menu).pack()
 
     def back_to_menu(self):
         self.frame.pack_forget()
-        self.mainMenuFrame.pack()
+        self.main_menu_frame.pack()
 
     def quit_button(self):
         ttk.Button(self.frame, text='Quit', command=self.frame.quit).pack()
