@@ -11,9 +11,7 @@ DB_COLUMNS = columns
 
 class Create:
     def __init__(self, root, main_menu_frame, utility_buttons):
-        self.scrolledtext_variables = []
         self.entry_variables = []
-        self.date_variables = []
         self.frame = Frame(root)
         self.frame.pack()
         self.main_menu_frame = main_menu_frame
@@ -45,16 +43,14 @@ class Create:
     def create_misc_details(self):
         title = format_string(DB_COLUMNS[-2])
         ttk.Label(self.frame, text=title, font='30').pack()
-        scroll_text = ScrolledText(self.frame, width=40, height=10)
-        scroll_text.pack()
-        self.scrolledtext_variables.append(scroll_text)
+        self.scroll_text = ScrolledText(self.frame, width=40, height=10)
+        self.scroll_text.pack()
 
     def create_date_entry(self):
         title = format_string(DB_COLUMNS[-1])
         ttk.Label(self.frame, text=title, font='30').pack()
-        date_entry = DateEntry(self.frame)
-        date_entry.pack()
-        self.date_variables.append(date_entry)
+        self.date_entry = DateEntry(self.frame)
+        self.date_entry.pack()
 
     def save_entries(self):
         """Button that saves entry objects to database"""
@@ -66,7 +62,8 @@ class Create:
         self.converted_variables = []
         self.convertEntry()
         self.convertScroll()
-        self.convertScroll()
+        self.convertDate()
+        print(self.converted_variables)
         populate_db(self.converted_variables)
         self.save_complete()
 
@@ -79,13 +76,11 @@ class Create:
             self.converted_variables.append(item.get())
 
     def convertScroll(self):
-        for item in self.scrolledtext_variables:
-            self.converted_variables.append(item.get('1.0', 'end-1c'))
+        self.converted_variables.append(self.scroll_text.get('1.0', 'end-1c'))
     
-    def convertDate(self, converted_variables):
+    def convertDate(self):
         # date output converted to str > year/month/day
-        for item in self.date_variables:
-            self.converted_variables.append(str(item.get_date()))
+        self.converted_variables.append(str(self.date_entry.get_date()))
 
 class Show:
     def __init__(self, root, main_menu_frame, utility_buttons) -> None:
@@ -142,7 +137,7 @@ class Show:
         message_display.pack(side=LEFT)
         message_scroll.pack(side=RIGHT, fill=Y)
         
-class utilityButtons:
+class UtilityButtons:
     def __init__(self, frame, main_menu_frame=None) -> None:
         self.frame = frame
         self.main_menu_frame = main_menu_frame
@@ -180,7 +175,7 @@ class App:
          
     def changeFrame(self, cls):
         self.frame.pack_forget()
-        cls(self.root, self.frame, utilityButtons)
+        cls(self.root, self.frame, UtilityButtons)
         
 
-app = App(utilityButtons)
+app = App(UtilityButtons)
